@@ -23,13 +23,15 @@ TARGET     = end_node
 
 # Take a look into $(CUBE_DIR)/Drivers/BSP for available BSPs
 # name needed in upper case and lower case
-BOARD      = STM32L073RZ-Nucleo
-BOARD_UC   = STM32L0XX_NUCLEO
-BOARD_MC   = STM32L0xx_Nucleo
-BOARD_LC   = stm32l0xx_nucleo
-RADIO      = sx1272
-COMPONENT  = sx1272mb2das
-BSP_BASE   = $(COMPONENT)
+BOARD      = B-L072Z-LRWAN1
+BOARD_UC   = B-L072Z-LRWAN1
+BOARD_MC   = B-L072Z-LRWAN1
+BOARD_LC   = b-l072z-lrwan1
+RADIO      = sx1276
+COMPONENT  = mlm32l0xx
+COMP_MC    = MLM32L07X01
+COMP_LC    = mlm32l07x01
+BSP_BASE   = $(BOARD)
 
 OCDFLAGS   = -f board/st_nucleo_l073rz.cfg
 GDBFLAGS   =
@@ -40,19 +42,19 @@ APP_ROOT   = ../..
 # MCU family and type in various capitalizations o_O
 MCU_FAMILY = stm32l0xx
 MCU_FAM_MC = STM32L0xx
-MCU_LC     = stm32l073xx
-MCU_MC     = STM32L073xx
-MCU_UC     = STM32L073RZ
+MCU_LC     = stm32l072xx
+MCU_MC     = STM32L072xx
+MCU_UC     = STM32L072CZ
 
 # path of the ld-file inside the example directories
-LDFILE     = $(APP_ROOT)/SW4STM32/$(BOARD)/$(COMPONENT)/$(MCU_UC)Tx_FLASH.ld
+LDFILE     = $(APP_ROOT)/SW4STM32/$(BOARD)/$(COMP_LC)/$(MCU_UC)Yx_FLASH.ld
 #LDFILE     = $(EXAMPLE)/TrueSTUDIO/$(BOARD_UC)/$(MCU_UC)_FLASH.ld
 
 # Your C files from the /src directory
 SRCS       = main.c
 SRCS      += system_$(MCU_FAMILY).c
-SRCS      += $(MCU_FAMILY)_it.c
-SRCS      += $(MCU_FAMILY)_hw.c
+SRCS      += $(COMPONENT)_it.c
+SRCS      += $(COMPONENT)_hw.c
 SRCS      += bsp.c
 SRCS      += debug.c
 SRCS      += hw_gpio.c
@@ -61,7 +63,7 @@ SRCS      += hw_spi.c
 SRCS      += vcom.c
 
 # Basic HAL libraries
-SRCS      += $(MCU_FAMILY)_hal_msp.c
+SRCS      += $(COMPONENT)_hal_msp.c
 SRCS      += $(MCU_FAMILY)_hal_spi.c
 SRCS      += $(MCU_FAMILY)_hal_uart.c
 SRCS      += $(MCU_FAMILY)_hal_uart_ex.c
@@ -114,14 +116,15 @@ SRCS      += LPS22HB_Driver_HL.c
 SRCS      += $(RADIO).c
 
 # Drivers/BSP/...
-SRCS      += $(BSP_BASE).c
+SRCS      += $(BOARD_LC).c
+SRCS      += $(COMP_LC).c
 
 # Directories
 OCD_DIR    = /usr/local/Cellar/open-ocd/0.10.0/share/openocd/scripts
 
 CUBE_DIR   = ../../../../../../..
 
-BSP_DIR    = $(CUBE_DIR)/Drivers/BSP/$(COMPONENT)
+BSP_DIR    = $(CUBE_DIR)/Drivers/BSP/$(COMP_MC)
 HAL_DIR    = $(CUBE_DIR)/Drivers/$(MCU_FAM_MC)_HAL_Driver
 CMSIS_DIR  = $(CUBE_DIR)/Drivers/CMSIS
 
@@ -154,7 +157,7 @@ OCD        = openocd
 DEFS       = -D$(MCU_MC) -DUSE_HAL_DRIVER
 
 # LoRa
-DEFS       += -DUSE_STM32L0XX_NUCLEO
+DEFS       += -DUSE_B_L072Z_LRWAN1
 DEFS       += -DREGION_EU868
 
 # Debug specific definitions for semihosting
@@ -205,6 +208,7 @@ LDFLAGS   += --specs=rdimon.specs -lc -lrdimon
 # Source search paths
 VPATH      = $(APP_ROOT)/src
 VPATH     += $(BSP_DIR)
+VPATH     += $(CUBE_DIR)/Drivers/BSP/$(BOARD_MC)
 VPATH     += $(HAL_DIR)/Src
 VPATH     += $(DEV_DIR)/Source
 VPATH     += $(DEV_DIR)/Source/Templates

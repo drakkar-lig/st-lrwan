@@ -31,7 +31,6 @@ RADIO      = sx1276
 COMPONENT  = mlm32l0xx
 COMP_MC    = MLM32L07X01
 COMP_LC    = mlm32l07x01
-BSP_BASE   = $(BOARD)
 
 OCDFLAGS   = -f board/st_nucleo_l073rz.cfg
 GDBFLAGS   =
@@ -61,9 +60,9 @@ SRCS      += hw_gpio.c
 SRCS      += hw_rtc.c
 SRCS      += hw_spi.c
 SRCS      += vcom.c
+SRCS      += $(COMPONENT)_hal_msp.c
 
 # Basic HAL libraries
-SRCS      += $(COMPONENT)_hal_msp.c
 SRCS      += $(MCU_FAMILY)_hal_spi.c
 SRCS      += $(MCU_FAMILY)_hal_uart.c
 SRCS      += $(MCU_FAMILY)_hal_uart_ex.c
@@ -270,7 +269,7 @@ openocd:
 	$(OCD) -s $(OCD_DIR) $(OCDFLAGS)
 
 program: all
-	$(OCD) -s $(OCD_DIR) $(OCDFLAGS) -c "program $(TARGET).elf verify reset"
+	$(OCD) -s $(OCD_DIR) $(OCDFLAGS) -c "program $(TARGET).elf verify reset exit"
 
 debug:
 	@if ! nc -z localhost 3333; then \

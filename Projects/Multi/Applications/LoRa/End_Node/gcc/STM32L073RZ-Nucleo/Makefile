@@ -29,7 +29,6 @@ BOARD_MC   = STM32L0xx_Nucleo
 BOARD_LC   = stm32l0xx_nucleo
 RADIO      = sx1272
 COMPONENT  = sx1272mb2das
-BSP_BASE   = $(COMPONENT)
 
 OCDFLAGS   = -f board/st_nucleo_l073rz.cfg
 GDBFLAGS   =
@@ -53,6 +52,7 @@ SRCS       = main.c
 SRCS      += system_$(MCU_FAMILY).c
 SRCS      += $(MCU_FAMILY)_it.c
 SRCS      += $(MCU_FAMILY)_hw.c
+SRCS      += $(MCU_FAMILY)_hal_msp.c
 SRCS      += bsp.c
 SRCS      += debug.c
 SRCS      += hw_gpio.c
@@ -61,7 +61,6 @@ SRCS      += hw_spi.c
 SRCS      += vcom.c
 
 # Basic HAL libraries
-SRCS      += $(MCU_FAMILY)_hal_msp.c
 SRCS      += $(MCU_FAMILY)_hal_spi.c
 SRCS      += $(MCU_FAMILY)_hal_uart.c
 SRCS      += $(MCU_FAMILY)_hal_uart_ex.c
@@ -114,7 +113,7 @@ SRCS      += LPS22HB_Driver_HL.c
 SRCS      += $(RADIO).c
 
 # Drivers/BSP/...
-SRCS      += $(BSP_BASE).c
+SRCS      += $(COMPONENT).c
 
 # Directories
 OCD_DIR    = /usr/local/Cellar/open-ocd/0.10.0/share/openocd/scripts
@@ -266,7 +265,7 @@ openocd:
 	$(OCD) -s $(OCD_DIR) $(OCDFLAGS)
 
 program: all
-	$(OCD) -s $(OCD_DIR) $(OCDFLAGS) -c "program $(TARGET).elf verify reset"
+	$(OCD) -s $(OCD_DIR) $(OCDFLAGS) -c "program $(TARGET).elf verify reset exit"
 
 debug:
 	@if ! nc -z localhost 3333; then \
